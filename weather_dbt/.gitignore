@@ -1,0 +1,11 @@
+
+target/
+dbt_packages/
+logs/
+.env
+.venv/
+weather_hourly.csv
+__pycache__/
+weather_dbt/target/
+weather_dbt/logs/
+weather_dbt/dbt_packages/

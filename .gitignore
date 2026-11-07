@@ -1,0 +1,10 @@
+airflow.cfg
+config/airflow.cfg
+airflow.db
+logs/
+webserver_config.py
+simple_auth_manager_passwords.json.generated
+.env
+weather_hourly.csv
+.venv/
+__pycache__/

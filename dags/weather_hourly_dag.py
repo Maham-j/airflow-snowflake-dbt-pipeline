@@ -1,10 +1,16 @@
 import os
 from datetime import datetime
+from airflow.providers.standard.operators.bash import BashOperator
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 CSV_PATH = "/opt/airflow/dags/weather_hourly.csv"
+DBT_CMD = (
+    "cd /opt/airflow/weather_dbt && "
+    "DBT_TARGET_PATH=/tmp/dbt_target DBT_LOG_PATH=/tmp/dbt_logs "
+    "/home/airflow/dbt_venv/bin/dbt"
+)
 
 
 def extract():
@@ -72,11 +78,14 @@ def load():
 
 with DAG(
     dag_id="weather_hourly_to_snowflake",
-    description="Hourly weather for 20 cities: API -> Snowflake RAW",
+    description="Hourly weather for 20 cities: API -> Snowflake RAW -> dbt models and tests",
     schedule=None,
     start_date=datetime(2026, 1, 1),
     catchup=False,
 ) as dag:
     extract_task = PythonOperator(task_id="extract_hourly", python_callable=extract)
     load_task = PythonOperator(task_id="load_hourly", python_callable=load)
-    extract_task >> load_task
+    dbt_run = BashOperator(task_id="dbt_run", bash_command=f"{DBT_CMD} run --profiles-dir .")
+    dbt_test = BashOperator(task_id="dbt_test", bash_command=f"{DBT_CMD} test --profiles-dir .")
+
+    extract_task >> load_task >> dbt_run >> dbt_test

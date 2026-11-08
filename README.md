@@ -25,12 +25,16 @@ stg_weather_hourly (view)
 
 ![dbt lineage](lineage.png)
 
+Airflow DAG: `extract_hourly → load_hourly → dbt_run → dbt_test`. Every load is followed by the dbt models and all 11 tests.
+
+
 ## What it does
 
 - **Extract:** pulls hourly temperature, precipitation, humidity and wind speed for 10 Pakistani and 10 international cities (8,760 hours each) from the Open-Meteo archive API, with retries.
 - **Load:** bulk-loads the file with `PUT` and `COPY INTO` a staging table, then runs one `MERGE` on (city, timestamp). Re-running never creates duplicates.
 - **Model:** dbt builds a staging view, two dimensions, an incremental fact table and a daily summary mart (7,300 rows: 20 cities × 365 days).
 - **Test:** 11 dbt tests pass: unique and not-null keys, relationships from the fact table to both dimensions, a temperature range check, and a check that the fact table has no duplicate city-hour rows.
+- **Orchestrate:** one Airflow DAG runs extract, load, `dbt run` and `dbt test` in order, so a failed test turns the last task red. dbt lives in its own virtual environment inside a custom Airflow image to avoid dependency clashes.
 
 ## Design decisions
 
@@ -46,7 +50,7 @@ Python, Apache Airflow (Docker Compose, LocalExecutor), Snowflake, dbt Core, SQL
 
 1. In Snowflake, create the warehouse, database, `RAW` schema, a role and a user for the pipeline.
 2. Create a `.env` file (never commit it) with `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ACCOUNT` and the Airflow keys.
-3. Start Airflow: `docker compose up airflow-init`, then `docker compose up -d`.
+3. Build and start Airflow (the custom image includes dbt): `docker compose build`, `docker compose up airflow-init`, then `docker compose up -d`.
 4. Trigger the `weather_hourly_to_snowflake` DAG once.
 5. Configure `~/.dbt/profiles.yml` for Snowflake, then from `weather_dbt/` run `dbt run`, `dbt test` and `dbt docs generate`.
 
@@ -61,5 +65,4 @@ docker-compose.yaml    Airflow stack
 
 ## Next steps
 
-- Trigger `dbt run` and `dbt test` from Airflow after each load.
 - Switch the DAG to a daily schedule with a short lookback window.

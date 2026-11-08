@@ -8,3 +8,5 @@ simple_auth_manager_passwords.json.generated
 weather_hourly.csv
 .venv/
 __pycache__/
+weather_dbt/.user.yml
+dags/weather_data.csv

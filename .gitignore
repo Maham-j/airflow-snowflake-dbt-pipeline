@@ -10,3 +10,4 @@ weather_hourly.csv
 __pycache__/
 weather_dbt/.user.yml
 dags/weather_data.csv
+*.pbix

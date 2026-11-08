@@ -27,6 +27,14 @@ stg_weather_hourly (view)
 
 Airflow DAG: `extract_hourly → load_hourly → dbt_run → dbt_test`. Every load is followed by the dbt models and all 11 tests.
 
+## Dashboard
+
+A Power BI report on top of `mart_daily_city_summary`: country slicer, average and peak temperature, total rainfall, daily temperature trend, city comparisons, and humidity vs temperature.
+
+![Power BI dashboard](dashboard1.png)
+![Power BI dashboard](dashboard2.png)
+
+
 
 ## What it does
 

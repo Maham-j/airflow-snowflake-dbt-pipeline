@@ -69,9 +69,9 @@ After the second run, the fact table still has 175,200 rows, so the pipeline is 
 
 A Power BI report on top of `mart_daily_city_summary`, built with five DAX measures (average, maximum and minimum temperature, total rainfall, average humidity). A country slicer filters every visual.
 
-![Dashboard overview](../images/dashboard-overview.png)
+![Dashboard overview](../images/dashboard1.png)
 
-![Dashboard details](../images/dashboard-details.png)
+![Dashboard details](../images/dashboard2.png)
 
 ---
 
@@ -121,8 +121,3 @@ Average yearly temperature by country ranged from about 9 °C to 28.5 °C, with 
 - Put counts and tests at every layer, so a wrong number gets caught early.
 - Use a measure for any number in a BI tool, not a raw column.
 
-## What I would do next
-
-- Run the DAG daily with a short lookback window instead of reloading a full year.
-- Add failure alerts to the DAG.
-- Refresh the Power BI report on a schedule.

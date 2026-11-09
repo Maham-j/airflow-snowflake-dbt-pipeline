@@ -1,3 +1,4 @@
+Full build walkthrough, problems and fixes: [docs/walkthrough.md](docs/walkthrough.md)
 # Weather Data Pipeline: Airflow → Snowflake → dbt
 
 An end-to-end batch pipeline that loads one year of hourly weather for 20 cities (175,200 rows) into Snowflake and models it into a star schema with dbt.
@@ -23,7 +24,7 @@ stg_weather_hourly (view)
         mart_daily_city_summary
 ```
 
-![dbt lineage](lineage.png)
+![dbt lineage](images/lineage.png)
 
 Airflow DAG: `extract_hourly → load_hourly → dbt_run → dbt_test`. Every load is followed by the dbt models and all 11 tests.
 
@@ -31,9 +32,8 @@ Airflow DAG: `extract_hourly → load_hourly → dbt_run → dbt_test`. Every lo
 
 A Power BI report on top of `mart_daily_city_summary`: country slicer, average and peak temperature, total rainfall, daily temperature trend, city comparisons, and humidity vs temperature.
 
-![Power BI dashboard](dashboard1.png)
-![Power BI dashboard](dashboard2.png)
-
+![Power BI dashboard](images/dashboard1.png)
+![Power BI dashboard](images/dashboard2.png)
 
 
 ## What it does

@@ -71,6 +71,3 @@ weather_dbt/tests/     custom data tests
 docker-compose.yaml    Airflow stack
 ```
 
-## Next steps
-
-- Switch the DAG to a daily schedule with a short lookback window.
